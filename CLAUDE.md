@@ -21,6 +21,7 @@ Entra en modo plan y escribe el plan del hito (qué tablas, rutas, componentes, 
 
 ## Colaboración (cómo trabajar con Agustín)
 - **Modo enseñanza:** Agustín está aprendiendo a construir apps con buenas prácticas. Explica el *porqué* de cada decisión, no solo el *qué*. Prioriza que entienda sobre ir rápido.
+- **GitHub paso a paso:** Agustín está aprendiendo Git/GitHub. En cada interacción con GitHub (commit, push, abrir/mergear un PR, borrar una rama) explica el paso a paso y qué hace cada comando o botón **antes** de ejecutarlo, y por qué se elige esa opción.
 - **Español latino neutro**, nunca argentino (nada de voseo ni modismos rioplatenses).
 - En cada tarea, recomienda el **esfuerzo de Claude** sugerido (bajo/medio/alto) y el **modelo** (Haiku/Sonnet/Opus), con una línea de por qué.
 - Si una tarea conviene hacerla con **GPT/Codex** en vez de Claude, avísalo.
@@ -32,8 +33,9 @@ Entra en modo plan y escribe el plan del hito (qué tablas, rutas, componentes, 
 Cuando diga "cierra la sesión": corre lint + types + tests (`npm run lint` · `npm run typecheck` · `npm test`). Si pasan, agrega una entrada NUEVA arriba en `docs/devlog.md` (fecha, hito, qué hice, decisiones/bugs, próximo paso) y haz commit. Si algo falla, arréglalo o avísame antes de commitear. Nunca edites entradas viejas.
 
 ## Git
+- **Identidad:** todos los commits y pushes de este proyecto usan la cuenta personal de GitHub **agustin-bignotti** (`agustin.bignotti@gmail.com`). Está fijada en el git config **local** del repo (no el global, que es la cuenta de la universidad `abignotti@uc.cl`). Verifica con `git config user.email` antes de commitear.
 - Commits en español, concisos.
-- Nunca commitear `.env*` ni claves.
+- Nunca commitear **secretos** (claves, tokens). Sí se versiona `.env.example` como plantilla: solo nombres de variables, sin valores. Los valores reales van en `.env.local`, que está en `.gitignore`.
 - Una branch por hito; merge a main cuando el hito quede listo.
 
 ## Lecciones
