@@ -12,12 +12,21 @@ Entra en modo plan y escribe el plan del hito (qué tablas, rutas, componentes, 
 - Las respuestas del cuestionario van en `jsonb`, indexadas por la `key` de cada pregunta — nunca una columna por pregunta.
 - Colores como variables CSS en `globals.css`, nunca hardcodeados. Define la paleta ahí.
 - Textos y datos a su único lugar, nunca hardcodeados en el JSX.
-- Mínima fricción siempre: captura datos como efecto secundario de una acción (las fechas al cambiar de estado), todo lo opcional es de verdad opcional, defaults inteligentes, y el cuestionario se responde a toque (likert y opciones), sin obligar a escribir.
+- Mínima fricción siempre: captura datos como efecto secundario de una acción (las fechas al cambiar de estado), todo lo opcional es de verdad opcional, defaults inteligentes, y el cuestionario se responde rápido (likert y opciones), sin obligar a escribir.
 
 ## Skills
 - Asegura que estas skills estén instaladas **globalmente** (instálalas si faltan) y úsalas activamente: Front-End Design, Superpowers, Find-Skills.
 - Antes de cualquier trabajo de UI/frontend, usa Front-End Design. Para descubrir o evaluar skills, usa Find-Skills.
 - Antes de tocar una librería que tenga su propia skill/SKILL.md, léela. No escribas su API de memoria.
+
+## Colaboración (cómo trabajar con Agustín)
+- **Modo enseñanza:** Agustín está aprendiendo a construir apps con buenas prácticas. Explica el *porqué* de cada decisión, no solo el *qué*. Prioriza que entienda sobre ir rápido.
+- **Español latino neutro**, nunca argentino (nada de voseo ni modismos rioplatenses).
+- En cada tarea, recomienda el **esfuerzo de Claude** sugerido (bajo/medio/alto) y el **modelo** (Haiku/Sonnet/Opus), con una línea de por qué.
+- Si una tarea conviene hacerla con **GPT/Codex** en vez de Claude, avísalo.
+- Sugiere de forma proactiva qué se puede **paralelizar en un nuevo workspace** de Conductor.
+- Indica cuándo conviene hacer **`/clear`** (al cerrar un tema o antes de cambiar de foco) para no arrastrar contexto.
+- Mantén los docs vivos: actualiza spec/arquitectura/devlog cuando una conversación cambie algo relevante.
 
 ## Cierre de sesión
 Cuando diga "cierra la sesión": corre lint + types + tests (`npm run lint` · `npm run typecheck` · `npm test`). Si pasan, agrega una entrada NUEVA arriba en `docs/devlog.md` (fecha, hito, qué hice, decisiones/bugs, próximo paso) y haz commit. Si algo falla, arréglalo o avísame antes de commitear. Nunca edites entradas viejas.

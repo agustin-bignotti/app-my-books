@@ -81,7 +81,7 @@ erDiagram
 Multiusuario con RLS · Postgres real (Supabase) · libros globales + relación · respuestas en `jsonb` · LLM detrás de `lib/llm.ts`. El resto se deja emerger.
 
 ## Recomendaciones (v1)
-Solo cuando el usuario las pide, a partir de una consulta en lenguaje natural ("no ficción, corta, sobre historia de la humanidad"). Se arma un contexto estructurado (libros leídos + respuestas + comentarios) y se le pasa al LLM, que devuelve sugerencias con su porqué. Cada sugerencia se **verifica contra Google Books**; las que no se confirman se descartan, para no mandar a buscar libros inexistentes. Se habilita desde **3 libros respondidos** (con menos, el LLM adivina al voleo).
+Solo cuando el usuario las pide, a partir de una consulta en lenguaje natural ("no ficción, corta, sobre historia de la humanidad"). Se arma un contexto estructurado (libros leídos + respuestas + comentarios) y se le pasa al LLM, que devuelve sugerencias con su porqué. Cada sugerencia se **verifica contra Google Books**; las que no se confirman se descartan, para no mandar a buscar libros inexistentes. Se habilita desde **3 libros respondidos** (con menos, el LLM adivina a ciegas).
 
 ## Cuestionario
 Mide lo que el rating no captura, separando *propiedades del libro* (ritmo, qué lo movía, densidad) de *la reacción del lector* (enganche, rereadability, recomendación), más un texto libre opcional. Es opcional, pero solo los libros respondidos alimentan las recomendaciones y cuentan para el gate. Las preguntas viven en `questions`; agregar o retirar preguntas no rompe datos viejos.
