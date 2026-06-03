@@ -21,3 +21,6 @@ MyBooks es una app personal para registrar lo que leo, lo que quiero leer y lo q
 5. Recomendaciones: consulta en lenguaje natural + tu historial → LLM → sugerencias con el porqué, verificadas contra Google Books; habilitado desde 3 libros respondidos.
 
 Listo = registras tu biblioteca, respondes el cuestionario de lo leído, y la app te da recomendaciones razonadas; todo deployado y usable por ti y un par de invitados.
+
+## Más adelante (post-v1)
+- **Landing page propia:** una página de presentación pública de MyBooks, usada también como ejercicio para aprender buen diseño web (layout, jerarquía visual, animaciones, responsive). Va fuera del v1; se aborda como proyecto aparte cuando la app esté funcional.
