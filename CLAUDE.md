@@ -36,7 +36,8 @@ Cuando diga "cierra la sesión": corre lint + types + tests (`npm run lint` · `
 - **Identidad:** todos los commits y pushes de este proyecto usan la cuenta personal de GitHub **agustin-bignotti** (`agustin.bignotti@gmail.com`). Está fijada en el git config **local** del repo (no el global, que es la cuenta de la universidad `abignotti@uc.cl`). Verifica con `git config user.email` antes de commitear.
 - Commits en español, concisos.
 - Nunca commitear **secretos** (claves, tokens). Sí se versiona `.env.example` como plantilla: solo nombres de variables, sin valores. Los valores reales van en `.env.local`, que está en `.gitignore`.
-- Una branch por hito; merge a main cuando el hito quede listo.
+- Una branch por hito; merge a `main` cuando el hito quede listo. **Nombre de rama:** minúsculas con guiones, descriptivo y con prefijo de hito → `hito-N-descripcion` (ej. `hito-1-esqueleto-auth`).
+- Tras un *squash merge*, no reuses la rama: GitHub crea un commit nuevo que ella no conoce. Corta una rama fresca desde `main` actualizado (o rebasea sobre `origin/main`).
 
 ## Lecciones
 <!-- Vacío al inicio. Cuando me corrijas con `#` ("no vuelvas a hacer X"), la regla queda acá y no se repite. Acá también suben las lecciones de arquitectura durables del devlog. -->
