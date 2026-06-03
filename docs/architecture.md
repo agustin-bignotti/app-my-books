@@ -88,6 +88,10 @@ Mide lo que el rating no captura, separando *propiedades del libro* (ritmo, qué
 
 ## Evolución (v2+)
 Cada idea futura ya tiene su costura en el modelo; agregarla es extender, no rehacer.
+- **Autenticación — de magic link a contraseña + login social (Google):** el v1 entra solo con *magic link* (sin contraseña) por mínima fricción y porque no obliga a guardar contraseñas. Es una base **aditiva**: Supabase identifica a cada usuario por su cuenta en `auth.users` (clave: el email), y el método de entrada es una capa encima. Pasar a la opción "completa" es *agregar puertas a la misma casa*, sin rehacer cuentas ni datos:
+  - **Contraseña:** activar el provider email+password; construir registro, inicio con contraseña, "olvidé mi contraseña" (`resetPasswordForEmail`, casi todo viene hecho) y la pantalla de "definir nueva contraseña". Un usuario que ya entraba con magic link solo define una contraseña; su cuenta es la misma. Costo real = más pantallas y más casos por probar, no complejidad de fondo.
+  - **Login con Google (OAuth):** crear credenciales OAuth en Google Cloud, cargarlas en Supabase, agregar el botón "Continuar con Google" (`signInWithOAuth`) y registrar las *redirect URLs*. Si el email coincide, Supabase enlaza el acceso a la cuenta existente (*identity linking*) — no duplica usuario.
+  - No toca el modelo de datos (`books`/`user_books` siguen igual); es solo capa de auth.
 - **Capa social (estilo Goodreads):** `posts` cuelga de `users` + `books`; `post_likes`, `post_comments` y `follows` cuelgan de ahí. Los likes son a los posts, no al libro directo. Requiere introducir un rol admin para moderación.
 - **Recomendaciones semánticas:** una tabla/columna `book_embeddings` con `pgvector` en el mismo Postgres; retrieval por similitud antes del LLM (RAG). El texto libre del cuestionario es buen material para embeddear.
 - **Precios automáticos:** scraping + jobs programados que actualizan `price`; hoy es manual.
