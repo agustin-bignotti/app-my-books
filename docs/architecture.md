@@ -5,6 +5,11 @@ El porqué de cada decisión técnica. El *qué* está en `project-spec.md`, el 
 ## Stack
 Next.js (App Router) en Netlify, Supabase (Postgres + Auth + RLS), TypeScript + Tailwind, y una capa propia `lib/llm.ts` para hablar con el LLM (Claude Haiku por defecto, intercambiable). Se eligió Supabase por traer auth + RLS + (a futuro) realtime en una sola pieza, que es justo lo que pide el multiusuario y lo social de más adelante.
 
+## Autenticación y envío de email
+El login es por **magic link** (sin contraseña; ver evolución a contraseña + Google más abajo). El magic link depende de poder **enviar correos**, y ahí hay una decisión de infraestructura: el servicio de email *built-in* de Supabase tiene un rate limit fijo de **2 correos/hora** (no editable sin SMTP propio), inservible para uso real. Por eso se configura un **SMTP propio (Resend)**: 100 correos/día gratis y sin tope artificial.
+
+Resend exige **verificar un dominio** para enviar a destinatarios que no sean el dueño de la cuenta; por eso el dominio `agustinbignotti.com` se verifica vía registros DNS (DKIM, SPF, MX en el subdominio `send`, DMARC). Sin dominio verificado solo se puede enviar al propio correo — suficiente para desarrollar, insuficiente para invitar usuarios. Encaja en la frontera de confianza del sistema: la API key de Resend es **secreta** y vive solo en la config de Supabase (server-side), nunca en el cliente. Alternativas equivalentes sin dominio (single-sender verification): SendGrid, Brevo, o Gmail SMTP.
+
 ## Sistema: cómo viaja una request
 
 ```mermaid

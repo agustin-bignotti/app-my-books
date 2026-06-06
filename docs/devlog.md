@@ -4,6 +4,25 @@ Lo nuevo arriba. No edites entradas viejas.
 
 ---
 
+## [2026-06-04] — Hito 1: Esqueleto Next.js + Supabase Auth + RLS
+Qué hice:
+- **Migración** (vía MCP Supabase): enum `book_status` (por_leer, comprado, leyendo, leido, abandonado) + tablas `books` (catálogo global, sin user_id) y `user_books` (ficha privada con `user_id`), ambas con RLS. Políticas: `books` legible/insertable por cualquier autenticado; `user_books` con `auth.uid() = user_id` en select/insert/update/delete.
+- **Scaffold Next.js** (App Router, TS, Tailwind, ESLint). Scripts `typecheck` (tsc) y `test` (Vitest) agregados para que el cierre de sesión funcione.
+- **Auth**: clientes Supabase SSR (browser + server), middleware que refresca sesión y protege rutas, login por magic link, `/auth/callback`, botón de cerrar sesión.
+- **Biblioteca**: Server Component con la lista + Server Action para agregar libro (inserta en `books` y luego en `user_books`).
+- **Deploy** en Netlify desde la rama del hito; redirect URL registrada en Supabase.
+- **Email propio (Resend)** + dominio `agustinbignotti.com` verificado por DNS.
+- **Verificación de RLS**: a nivel DB (simulando JWTs con `set_config('request.jwt.claims', ...)`) y end-to-end con dos cuentas reales — ninguna ve los libros de la otra. ✅
+
+Decisiones/bugs:
+- **Auth = magic link** (sin contraseña) por mínima fricción; es base aditiva (se puede sumar contraseña + Google después sin rehacer). Documentado en architecture.md → Evolución.
+- **Dos tablas desde el inicio** (`books` global + `user_books`): respeta el modelo "difícil de revertir" (libros globales abaratan la descripción IA y lo social a futuro). La columna `status` se incluyó ya aunque su CRUD sea del Hito 2 (casi gratis, evita migración).
+- **BUG — rate limit de email**: el email built-in de Supabase tiene tope fijo de **2 correos/hora**; bloqueó el smoke test multiusuario. Solución: SMTP propio con Resend (100/día). Detalle: Resend exige **dominio verificado** para enviar a terceros (sin dominio solo manda al dueño de la cuenta) → se compró y verificó `agustinbignotti.com` (DKIM + SPF + MX en `send` + DMARC en Namecheap; el MX requiere cambiar Mail Settings de "Email Forwarding" a "Custom MX").
+- **Lección — magic link y escáneres**: un error `otp_expired` puede no ser por tiempo, sino porque un escáner de seguridad de email pre-consume el token de un solo uso.
+- **Proceso**: no usé las skills (frontend-design, superpowers) al inicio como manda CLAUDE.md; corregido. La UI quedó funcional pero sin diseño real — el design-system va en workspace aparte.
+
+Próximo paso: PR de `hito-1-esqueleto-auth` → `main` y mergear. Luego Hito 2 (CRUD de la biblioteca: estados, editar/borrar, link+precio, fechas automáticas, vistas filtradas). El design-system se hace en paralelo en otro workspace, partiendo de esta rama mergeada.
+
 ## [2026-06-03] — Hito 0 (cont.): Configuración de Git y convenciones
 Qué hice:
 - Fijé la identidad de Git del repo a la cuenta personal **agustin-bignotti** (config *local*; la global de la universidad queda intacta).
