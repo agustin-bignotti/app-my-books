@@ -5,6 +5,11 @@ El porqué de cada decisión técnica. El *qué* está en `project-spec.md`, el 
 ## Stack
 Next.js (App Router) en Netlify, Supabase (Postgres + Auth + RLS), TypeScript + Tailwind, y una capa propia `lib/llm.ts` para hablar con el LLM (Claude Haiku por defecto, intercambiable). Se eligió Supabase por traer auth + RLS + (a futuro) realtime en una sola pieza, que es justo lo que pide el multiusuario y lo social de más adelante.
 
+## Autenticación y envío de email
+El login es por **magic link** (sin contraseña; ver evolución a contraseña + Google más abajo). El magic link depende de poder **enviar correos**, y ahí hay una decisión de infraestructura: el servicio de email *built-in* de Supabase tiene un rate limit fijo de **2 correos/hora** (no editable sin SMTP propio), inservible para uso real. Por eso se configura un **SMTP propio (Resend)**: 100 correos/día gratis y sin tope artificial.
+
+Resend exige **verificar un dominio** para enviar a destinatarios que no sean el dueño de la cuenta; por eso el dominio `agustinbignotti.com` se verifica vía registros DNS (DKIM, SPF, MX en el subdominio `send`, DMARC). Sin dominio verificado solo se puede enviar al propio correo — suficiente para desarrollar, insuficiente para invitar usuarios. Encaja en la frontera de confianza del sistema: la API key de Resend es **secreta** y vive solo en la config de Supabase (server-side), nunca en el cliente. Alternativas equivalentes sin dominio (single-sender verification): SendGrid, Brevo, o Gmail SMTP.
+
 ## Sistema: cómo viaja una request
 
 ```mermaid
@@ -88,6 +93,10 @@ Mide lo que el rating no captura, separando *propiedades del libro* (ritmo, qué
 
 ## Evolución (v2+)
 Cada idea futura ya tiene su costura en el modelo; agregarla es extender, no rehacer.
+- **Autenticación — de magic link a contraseña + login social (Google):** el v1 entra solo con *magic link* (sin contraseña) por mínima fricción y porque no obliga a guardar contraseñas. Es una base **aditiva**: Supabase identifica a cada usuario por su cuenta en `auth.users` (clave: el email), y el método de entrada es una capa encima. Pasar a la opción "completa" es *agregar puertas a la misma casa*, sin rehacer cuentas ni datos:
+  - **Contraseña:** activar el provider email+password; construir registro, inicio con contraseña, "olvidé mi contraseña" (`resetPasswordForEmail`, casi todo viene hecho) y la pantalla de "definir nueva contraseña". Un usuario que ya entraba con magic link solo define una contraseña; su cuenta es la misma. Costo real = más pantallas y más casos por probar, no complejidad de fondo.
+  - **Login con Google (OAuth):** crear credenciales OAuth en Google Cloud, cargarlas en Supabase, agregar el botón "Continuar con Google" (`signInWithOAuth`) y registrar las *redirect URLs*. Si el email coincide, Supabase enlaza el acceso a la cuenta existente (*identity linking*) — no duplica usuario.
+  - No toca el modelo de datos (`books`/`user_books` siguen igual); es solo capa de auth.
 - **Capa social (estilo Goodreads):** `posts` cuelga de `users` + `books`; `post_likes`, `post_comments` y `follows` cuelgan de ahí. Los likes son a los posts, no al libro directo. Requiere introducir un rol admin para moderación.
 - **Recomendaciones semánticas:** una tabla/columna `book_embeddings` con `pgvector` en el mismo Postgres; retrieval por similitud antes del LLM (RAG). El texto libre del cuestionario es buen material para embeddear.
 - **Precios automáticos:** scraping + jobs programados que actualizan `price`; hoy es manual.
